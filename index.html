@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>마구마구 2024 · 추억의 가위바위보</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap');
+
+    :root {
+      --gold: #f5c842;
+      --dark-gold: #c89b2a;
+      --brown: #5c3a1e;
+      --cream: #fdf3dc;
+      --red: #d93025;
+      --orange: #e8701a;
+      --shadow: rgba(0,0,0,0.4);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: radial-gradient(ellipse at top, #2a1505 0%, #0d0602 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── 별 배경 파티클 ── */
+    .stars {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .star {
+      position: absolute;
+      width: 3px; height: 3px;
+      background: #fff;
+      border-radius: 50%;
+      animation: twinkle var(--d, 3s) infinite alternate var(--delay, 0s);
+      opacity: .6;
+    }
+    @keyframes twinkle { from { opacity: .1; transform: scale(.8); } to { opacity: 1; transform: scale(1.4); } }
+
+    /* ── 컨테이너 ── */
+    .wrap {
+      position: relative;
+      z-index: 1;
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 0 0 60px;
+    }
+
+    /* ── 헤더 히어로 ── */
+    .hero {
+      position: relative;
+      background: linear-gradient(160deg, #7b3f00 0%, #3d1c00 60%, #1a0900 100%);
+      border-bottom: 4px solid var(--gold);
+      padding: 40px 24px 32px;
+      text-align: center;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23f5c842' fill-opacity='0.05'%3E%3Cpolygon points='20,2 24,14 37,14 27,22 31,35 20,27 9,35 13,22 3,14 16,14'/%3E%3C/g%3E%3C/svg%3E") repeat;
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-block;
+      background: var(--gold);
+      color: var(--brown);
+      font-weight: 900;
+      font-size: 12px;
+      letter-spacing: 2px;
+      padding: 4px 14px;
+      border-radius: 20px;
+      margin-bottom: 14px;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(245,200,66,.6);} 50%{box-shadow:0 0 0 10px rgba(245,200,66,0);} }
+
+    .hero-year {
+      font-size: 13px;
+      color: var(--gold);
+      letter-spacing: 4px;
+      font-weight: 700;
+      opacity: .8;
+    }
+    .hero-title {
+      font-size: 44px;
+      font-weight: 900;
+      line-height: 1.1;
+      color: var(--gold);
+      text-shadow: 0 0 30px rgba(245,200,66,.5), 3px 3px 0 var(--brown);
+      margin: 8px 0 4px;
+      letter-spacing: -1px;
+      animation: glowPulse 3s ease-in-out infinite;
+    }
+    @keyframes glowPulse {
+      0%,100%{text-shadow: 0 0 20px rgba(245,200,66,.4), 3px 3px 0 var(--brown);}
+      50%{text-shadow: 0 0 40px rgba(245,200,66,.9), 3px 3px 0 var(--brown);}
+    }
+    .hero-sub {
+      font-size: 22px;
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: 2px;
+    }
+    .hero-period {
+      margin-top: 18px;
+      display: inline-block;
+      background: rgba(0,0,0,.4);
+      border: 1px solid rgba(245,200,66,.4);
+      color: var(--cream);
+      font-size: 12px;
+      padding: 6px 20px;
+      border-radius: 20px;
+      letter-spacing: 1px;
+    }
+    .hero-period span { color: var(--gold); font-weight: 700; }
+
+    /* ── 섹션 공통 ── */
+    .section {
+      margin: 0 16px 20px;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0,0,0,.5);
+    }
+    .section-header {
+      background: linear-gradient(135deg, var(--red) 0%, #a01e18 100%);
+      color: #fff;
+      font-size: 18px;
+      font-weight: 900;
+      padding: 14px 20px;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-header .icon { font-size: 22px; }
+    .section-body {
+      background: linear-gradient(180deg, #fdf3dc 0%, #f5e4b8 100%);
+      padding: 20px;
+    }
+
+    /* ── 참여 방법 ── */
+    .how-intro {
+      background: var(--orange);
+      color: #fff;
+      border-radius: 12px;
+      padding: 16px 20px;
+      font-size: 14px;
+      font-weight: 700;
+      text-align: center;
+      line-height: 1.6;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 12px rgba(232,112,26,.4);
+    }
+    .how-intro strong { font-size: 17px; display: block; margin-bottom: 4px; }
+
+    .steps { display: flex; flex-direction: column; gap: 12px; }
+    .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background: #fff;
+      border-radius: 12px;
+      padding: 14px 16px;
+      border-left: 4px solid var(--gold);
+      box-shadow: 0 2px 8px rgba(0,0,0,.08);
+      transition: transform .2s;
+    }
+    .step:hover { transform: translateX(4px); }
+    .step-num {
+      width: 28px; height: 28px;
+      background: var(--gold);
+      color: var(--brown);
+      border-radius: 50%;
+      font-weight: 900;
+      font-size: 14px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .step-text { font-size: 13px; color: #333; line-height: 1.6; }
+    .step-text strong { color: var(--brown); }
+
+    /* ── 미션 타입 카드 ── */
+    .mission-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .mission-grid.two { grid-template-columns: repeat(2, 1fr); }
+    .mission-card {
+      background: linear-gradient(135deg, var(--brown) 0%, #3d1c00 100%);
+      border-radius: 12px;
+      padding: 14px 8px;
+      text-align: center;
+      color: var(--gold);
+      font-size: 12px;
+      font-weight: 700;
+      border: 2px solid var(--dark-gold);
+      cursor: pointer;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .mission-card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(245,200,66,.3); }
+    .mission-card .mc-icon { font-size: 26px; margin-bottom: 6px; display: block; }
+
+    /* ── 동전 카운터 ── */
+    .coin-display {
+      background: linear-gradient(135deg, #1a0900 0%, #3d1c00 100%);
+      border: 2px solid var(--gold);
+      border-radius: 14px;
+      padding: 20px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .coin-label { color: var(--cream); font-size: 13px; letter-spacing: 1px; margin-bottom: 8px; }
+    .coin-count {
+      font-size: 48px;
+      font-weight: 900;
+      color: var(--gold);
+      text-shadow: 0 0 20px rgba(245,200,66,.5);
+    }
+    .coin-count span { font-size: 22px; color: #fff; opacity: .6; }
+    .coin-bar {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .coin-slot {
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      border: 3px solid var(--dark-gold);
+      background: rgba(245,200,66,.08);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px;
+      transition: all .3s;
+    }
+    .coin-slot.filled { background: radial-gradient(circle, #f5c842, #c89b2a); box-shadow: 0 0 20px rgba(245,200,66,.6); }
+
+    /* ── RPS 가위바위보 ── */
+    .rps-title {
+      text-align: center;
+      color: var(--brown);
+      font-size: 16px;
+      font-weight: 900;
+      margin-bottom: 14px;
+      letter-spacing: 1px;
+    }
+    .rps-row {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .rps-btn {
+      width: 90px; height: 90px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      font-size: 36px;
+      font-weight: 900;
+      transition: transform .15s, box-shadow .15s;
+      position: relative;
+      overflow: hidden;
+    }
+    .rps-btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: rgba(255,255,255,.15);
+      opacity: 0;
+      transition: opacity .2s;
+    }
+    .rps-btn:hover::after { opacity: 1; }
+    .rps-btn:hover { transform: scale(1.12); }
+    .rps-btn:active { transform: scale(.95); }
+    .rps-btn.scissors { background: radial-gradient(circle at 30% 30%, #ff8a65, #d84315); box-shadow: 0 6px 20px rgba(216,67,21,.4); }
+    .rps-btn.rock    { background: radial-gradient(circle at 30% 30%, #78909c, #37474f); box-shadow: 0 6px 20px rgba(55,71,79,.4); }
+    .rps-btn.paper   { background: radial-gradient(circle at 30% 30%, #fff176, #f9a825); box-shadow: 0 6px 20px rgba(249,168,37,.4); }
+    .rps-label { font-size: 11px; color: #fff; margin-top: 2px; font-weight: 700; letter-spacing: 1px; }
+
+    /* ── 보상 섹션 ── */
+    .reward-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .reward-card {
+      border-radius: 14px;
+      padding: 16px 12px;
+      text-align: center;
+      border: 2px solid;
+      transition: transform .2s;
+    }
+    .reward-card:hover { transform: translateY(-4px); }
+    .reward-card.win {
+      background: linear-gradient(135deg, #fff8e1, #fff3cd);
+      border-color: var(--gold);
+    }
+    .reward-card.lose {
+      background: linear-gradient(135deg, #e8eaf6, #c5cae9);
+      border-color: #7986cb;
+    }
+    .reward-card-title {
+      font-size: 13px;
+      font-weight: 900;
+      margin-bottom: 10px;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .reward-card.win .reward-card-title { color: var(--dark-gold); }
+    .reward-card.lose .reward-card-title { color: #3949ab; }
+    .reward-item {
+      background: rgba(255,255,255,.7);
+      border-radius: 8px;
+      padding: 8px;
+      font-size: 11px;
+      color: #555;
+      font-weight: 700;
+      margin-bottom: 6px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .reward-item:last-child { margin-bottom: 0; }
+    .reward-item .ri-icon { font-size: 18px; }
+
+    /* ── 누적 보상 ── */
+    .accum-header {
+      background: linear-gradient(135deg, #1a6b2a 0%, #0d3d16 100%);
+      color: #fff;
+      font-size: 18px;
+      font-weight: 900;
+      padding: 14px 20px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .accum-body {
+      background: linear-gradient(180deg, #e8f5e9 0%, #c8e6c9 100%);
+      padding: 20px;
+    }
+    .accum-desc {
+      background: rgba(255,255,255,.7);
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 13px;
+      color: #2e7d32;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 16px;
+      line-height: 1.6;
+    }
+    .accum-counter {
+      background: linear-gradient(135deg, #1a6b2a, #0d3d16);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+      color: #fff;
+      margin-bottom: 16px;
+    }
+    .accum-counter-label { font-size: 12px; opacity: .7; margin-bottom: 4px; }
+    .accum-counter-val { font-size: 40px; font-weight: 900; color: #a5d6a7; }
+
+    .milestone-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .milestone {
+      background: #fff;
+      border-radius: 14px;
+      padding: 16px 12px;
+      text-align: center;
+      border: 2px solid #a5d6a7;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .milestone:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(21,128,61,.2); }
+    .milestone-count {
+      display: inline-block;
+      background: linear-gradient(135deg, #2e7d32, #1a6b2a);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 900;
+      padding: 3px 12px;
+      border-radius: 20px;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+    }
+    .milestone-icon { font-size: 36px; margin-bottom: 6px; }
+    .milestone-name {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--brown);
+      margin-bottom: 8px;
+    }
+    .claim-btn {
+      display: block;
+      background: linear-gradient(135deg, var(--gold), var(--dark-gold));
+      color: var(--brown);
+      font-weight: 900;
+      font-size: 13px;
+      padding: 8px 0;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      transition: transform .2s, box-shadow .2s;
+      letter-spacing: 1px;
+    }
+    .claim-btn:hover { transform: scale(1.04); box-shadow: 0 4px 14px rgba(245,200,66,.5); }
+
+    /* ── 주의사항 ── */
+    .notice {
+      margin: 0 16px;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 14px;
+      padding: 20px;
+      color: rgba(255,255,255,.6);
+      font-size: 11px;
+      line-height: 2;
+    }
+    .notice-title {
+      color: var(--gold);
+      font-weight: 900;
+      font-size: 14px;
+      margin-bottom: 10px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .notice li { margin-left: 14px; }
+
+    /* ── 글로우 분리선 ── */
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      margin: 24px 16px;
+      opacity: .4;
+    }
+
+    /* ── 반짝이 효과 ── */
+    @keyframes shimmer {
+      0% { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+    .shimmer {
+      background: linear-gradient(90deg, var(--gold) 0%, #fff8dc 40%, var(--gold) 60%, var(--dark-gold) 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shimmer 3s linear infinite;
+    }
+  </style>
+</head>
+<body>
+
+<!-- 별 배경 -->
+<div class="stars" id="stars"></div>
+
+<div class="wrap">
+
+  <!-- ── 히어로 헤더 ── -->
+  <div class="hero">
+    <div class="hero-badge">⚾ LIMITED EVENT</div>
+    <div class="hero-year">마구마구 2024</div>
+    <h1 class="hero-title shimmer">추억의<br>가위 바위 보!</h1>
+    <p class="hero-sub">그 시절 교실 속 승부를 다시 한번!</p>
+    <div class="hero-period">
+      이벤트 기간&nbsp;
+      <span>2024.07.01 (월) ~ 2024.07.31 (수)</span>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ── 참여 방법 ── -->
+  <div class="section">
+    <div class="section-header">
+      <span class="icon">🎯</span> 이벤트 참여 방법
+    </div>
+    <div class="section-body">
+      <div class="how-intro">
+        <strong>미션 완료 → 동전 획득 → 가위바위보 도전!</strong>
+        미션을 완료하고 동전을 모아<br>가위바위보에 도전해보세요!
+      </div>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-text">아래 <strong>5가지 미션</strong> 중 미션을 수행해 완료 후 이동 동전을 획득하세요.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-text">동전 확득 후 최대 <strong>3번까지</strong> 도전이 가능하며, 당일 획득 동전은 익일 <strong>소멸</strong>됩니다.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-text">추가 보상 <strong>'가위바위보'</strong>를 눌러 수락해 도전하거나 <strong>상대방을 찾아 도전</strong>할 수 있습니다.</div>
+        </div>
+      </div>
+
+      <div style="height:16px"></div>
+
+      <!-- 미션 타입 -->
+      <p style="font-size:13px;font-weight:900;color:var(--brown);margin-bottom:10px;text-align:center;">📋 미션 종류</p>
+      <div class="mission-grid">
+        <div class="mission-card"><span class="mc-icon">🏟️</span>라이브 시즌</div>
+        <div class="mission-card"><span class="mc-icon">🏅</span>골든 레이스</div>
+        <div class="mission-card"><span class="mc-icon">⭐</span>레전드 대전</div>
+      </div>
+      <div class="mission-grid two">
+        <div class="mission-card"><span class="mc-icon">🎮</span>게임 대전</div>
+        <div class="mission-card"><span class="mc-icon">📅</span>일일 미션</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 동전 & 가위바위보 ── -->
+  <div class="section">
+    <div class="section-header">
+      <span class="icon">🪙</span> 나의 동전 현황
+    </div>
+    <div class="section-body">
+      <div class="coin-display">
+        <div class="coin-label">보유 동전</div>
+        <div class="coin-count">0 <span>/ 3개</span></div>
+        <div class="coin-bar">
+          <div class="coin-slot">🪙</div>
+          <div class="coin-slot">🪙</div>
+          <div class="coin-slot">🪙</div>
+        </div>
+      </div>
+
+      <p class="rps-title">✊ 선택하세요! 승부를 결정하라!</p>
+      <div class="rps-row">
+        <button class="rps-btn scissors" onclick="pickRPS(this,'가위')">
+          ✌️<span class="rps-label">가위</span>
+        </button>
+        <button class="rps-btn rock" onclick="pickRPS(this,'바위')">
+          ✊<span class="rps-label">바위</span>
+        </button>
+        <button class="rps-btn paper" onclick="pickRPS(this,'보')">
+          🤚<span class="rps-label">보</span>
+        </button>
+      </div>
+      <div id="rps-result" style="text-align:center;font-weight:900;font-size:15px;color:var(--brown);min-height:22px;"></div>
+    </div>
+  </div>
+
+  <!-- ── 보상 ── -->
+  <div class="section">
+    <div class="section-header">
+      <span class="icon">🏆</span> 승리 · 패배 보상
+    </div>
+    <div class="section-body">
+      <div class="reward-row">
+        <div class="reward-card win">
+          <div class="reward-card-title">🌟 승리 보상</div>
+          <div class="reward-item"><span class="ri-icon">💰</span>마구머니</div>
+          <div class="reward-item"><span class="ri-icon">🎟️</span>경험치 티켓</div>
+          <div class="reward-item"><span class="ri-icon">⬆️</span>강화 재료</div>
+        </div>
+        <div class="reward-card lose">
+          <div class="reward-card-title">💎 패배 보상</div>
+          <div class="reward-item"><span class="ri-icon">🔑</span>도전 티켓</div>
+          <div class="reward-item"><span class="ri-icon">📦</span>선택 상자</div>
+          <div class="reward-item"><span class="ri-icon">✨</span>보너스 포인트</div>
+        </div>
+      </div>
+      <p style="text-align:center;font-size:11px;color:#888;">※ 보상은 수량/종류에 따라 변경될 수 있습니다.</p>
+    </div>
+  </div>
+
+  <!-- ── 누적 보상 ── -->
+  <div class="section">
+    <div class="accum-header">
+      <span class="icon">📈</span> 많이 할수록 더 좋은 보상이!
+    </div>
+    <div class="accum-body">
+      <div class="accum-desc">
+        가위바위보 누적 횟수가 쌓일수록<br>
+        <strong style="color:#1a6b2a;font-size:15px;">더 특별한 보상</strong>이 기다립니다!
+      </div>
+
+      <div class="accum-counter">
+        <div class="accum-counter-label">나의 누적 횟수</div>
+        <div class="accum-counter-val">0 <span style="font-size:18px;opacity:.6;">회</span></div>
+      </div>
+
+      <div class="milestone-row">
+        <div class="milestone">
+          <div class="milestone-count">🥉 25회 달성</div>
+          <div class="milestone-icon">🧤</div>
+          <div class="milestone-name">고장철 글러브 (황금)</div>
+          <button class="claim-btn">보상 받기</button>
+        </div>
+        <div class="milestone">
+          <div class="milestone-count">🥇 50회 달성</div>
+          <div class="milestone-icon">🏏</div>
+          <div class="milestone-name">1등급 헬멧 (성능)</div>
+          <button class="claim-btn">보상 받기</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ── 주의사항 ── -->
+  <div class="notice">
+    <div class="notice-title">⚠️ 주의사항</div>
+    <ul>
+      <li>이벤트 기간 중 획득한 동전은 당일 자정 소멸됩니다.</li>
+      <li>이벤트 보상은 계정당 1회씩만 수령 가능합니다.</li>
+      <li>어뷰징 행위 적발 시 보상이 회수될 수 있습니다.</li>
+      <li>이벤트 일정 및 내용은 사전 고지 없이 변경될 수 있습니다.</li>
+      <li>기타 문의사항은 고객센터를 통해 접수해 주세요.</li>
+    </ul>
+  </div>
+
+</div><!-- /wrap -->
+
+<script>
+  // 별 생성
+  const starsEl = document.getElementById('stars');
+  for (let i = 0; i < 60; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    s.style.cssText = `
+      left:${Math.random()*100}%;
+      top:${Math.random()*100}%;
+      --d:${2+Math.random()*4}s;
+      --delay:${Math.random()*4}s;
+      width:${1+Math.random()*3}px;
+      height:${1+Math.random()*3}px;
+    `;
+    starsEl.appendChild(s);
+  }
+
+  // 가위바위보 인터랙션
+  function pickRPS(btn, choice) {
+    const options = ['가위','바위','보'];
+    const computer = options[Math.floor(Math.random()*3)];
+    const map = {'가위':'✌️','바위':'✊','보':'🤚'};
+
+    let result;
+    if (choice === computer) result = '🤝 비겼습니다!';
+    else if (
+      (choice==='가위'&&computer==='보')||
+      (choice==='바위'&&computer==='가위')||
+      (choice==='보'&&computer==='바위')
+    ) result = '🎉 이겼습니다!';
+    else result = '😅 졌습니다...';
+
+    const el = document.getElementById('rps-result');
+    el.style.opacity = 0;
+    setTimeout(() => {
+      el.textContent = `나: ${map[choice]}  vs  컴퓨터: ${map[computer]}  →  ${result}`;
+      el.style.transition = 'opacity .4s';
+      el.style.opacity = 1;
+    }, 100);
+  }
+</script>
+</body>
+</html>
